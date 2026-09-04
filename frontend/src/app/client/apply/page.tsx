@@ -21,7 +21,7 @@ function ApplyForm() {
     const formData = new FormData(e.target as HTMLFormElement);
     
     try {
-      const res = await fetch("http://localhost:8000/api/applications/upload", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/applications/upload`, {
         method: "POST",
         body: formData,
       });

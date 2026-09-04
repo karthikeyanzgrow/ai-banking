@@ -11,7 +11,7 @@ export default function ApplicationsQueue() {
   const [activeView, setActiveView] = useState<'home' | 'loan' | 'account'>('home');
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/applications")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/applications`)
       .then((res) => res.json())
       .then((data) => {
         setApps(data);

@@ -13,7 +13,7 @@ export default function ApplicationDetail(props: { params: Promise<{ id: string 
   const router = useRouter();
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/applications/${resolvedParams.id}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/applications/${resolvedParams.id}`)
       .then((res) => res.json())
       .then((data) => {
         setData(data);
@@ -27,7 +27,7 @@ export default function ApplicationDetail(props: { params: Promise<{ id: string 
 
   const handleReview = async (action: 'approve' | 'reject') => {
     setActionLoading(true);
-    const promise = fetch(`http://localhost:8000/api/applications/${resolvedParams.id}/review`, {
+    const promise = fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/applications/${resolvedParams.id}/review`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action })
