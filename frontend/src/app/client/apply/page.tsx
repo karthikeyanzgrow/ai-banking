@@ -1,10 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, ShieldCheck, UploadCloud, CheckCircle2, FileText, Loader2, Lock } from "lucide-react";
+import { ArrowLeft, ShieldCheck, UploadCloud, CheckCircle2, FileText, Loader2, Lock, FileSignature, Building2, Contact, Plane, Landmark, Wallet } from "lucide-react";
 
-export default function ClientApply() {
+function ApplyForm() {
+  const searchParams = useSearchParams();
+  const type = searchParams.get('type');
+  
+  const pageTitle = type === 'loan' ? 'Corporate Loan Origination' : 'Business Account Opening';
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -60,95 +66,114 @@ export default function ClientApply() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="h-screen w-screen bg-[#f8fafc] text-slate-900 font-sans p-4 relative overflow-hidden flex flex-col items-center justify-center">
       {/* Background soft blurs */}
       <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-indigo-100/50 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto relative z-10">
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-10 flex flex-col items-center text-center"
-        >
-          <Link href="/" className="text-blue-600 hover:text-blue-800 flex items-center mb-6 text-sm font-semibold transition-colors bg-blue-50 px-4 py-2 rounded-full border border-blue-100">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Portal
+      <div className="w-full max-w-5xl relative z-10 flex flex-col h-full justify-center">
+        
+        {/* Header Section */}
+        <div className="flex items-center justify-between mb-4">
+          <Link href="/client" className="text-blue-600 hover:text-blue-800 flex items-center text-sm font-bold transition-colors bg-blue-50 px-4 py-2 rounded-full border border-blue-100">
+            <ArrowLeft className="w-4 h-4 mr-2" /> Back
           </Link>
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">Corporate Onboarding</h1>
-          <p className="text-lg text-slate-500 max-w-2xl">Upload your compliance documents. Our intelligent systems will parse and verify them instantly.</p>
-        </motion.div>
+          <div className="text-right">
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">{pageTitle}</h1>
+            <p className="text-sm text-slate-500">Secure AI Document Verification</p>
+          </div>
+        </div>
 
         <motion.form 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
           onSubmit={handleSubmit} 
-          className="bg-white/80 backdrop-blur-xl shadow-2xl shadow-slate-200/50 rounded-[2.5rem] overflow-hidden border border-white/50"
+          className="bg-white/90 backdrop-blur-xl shadow-2xl shadow-slate-200/50 rounded-3xl overflow-hidden border border-white/50 flex flex-col flex-grow max-h-[85vh]"
         >
-          <div className="bg-slate-900 px-10 py-8 text-white flex flex-col md:flex-row items-start md:items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold flex items-center gap-2">
-                <FileText className="w-6 h-6 text-blue-400" /> Document Checklist
-              </h2>
-              <p className="text-slate-400 text-sm mt-2">All files must be clear, high-resolution PDFs.</p>
-            </div>
-            <div className="hidden md:flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg border border-white/10 mt-4 md:mt-0">
-              <Lock className="w-4 h-4 text-green-400" />
-              <span className="text-sm font-medium text-slate-200">256-bit Encrypted</span>
+          {/* Form Header */}
+          <div className="bg-slate-900 px-6 py-4 text-white flex items-center justify-between shrink-0">
+            <h2 className="text-lg font-bold flex items-center gap-2">
+              <FileText className="w-5 h-5 text-blue-400" /> Document Checklist
+            </h2>
+            <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-md border border-white/10">
+              <Lock className="w-3.5 h-3.5 text-green-400" />
+              <span className="text-xs font-medium text-slate-200">256-bit Encrypted</span>
             </div>
           </div>
 
-          <div className="p-10 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10 bg-gradient-to-b from-white/50 to-slate-50/50">
-            
-            <div className="col-span-1 md:col-span-2">
-              <label className="block text-sm font-bold text-slate-900 mb-3 uppercase tracking-wider text-xs">Primary Application</label>
-              <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-                <div className="relative flex items-center justify-center w-full bg-white border border-slate-200 rounded-2xl p-2 transition-all">
-                  <input type="file" name="files" className="w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-xl" required />
-                </div>
-              </div>
-            </div>
+          {/* Form Body - Premium Visual Grid */}
+          <div className="flex-grow overflow-hidden bg-slate-50/50 p-4 md:p-6 flex flex-col justify-center">
+            <input type="hidden" name="application_type" value={type || 'account'} />
 
-            {[
-              { label: "Trade License", required: true },
-              { label: "Emirates ID (Signatory)", required: true },
-              { label: "Passport", required: true },
-              { label: "Bank Statements (6 Mos)", required: false },
-              { label: "Financials / Salary Cert", required: false },
-              { label: "Board Resolution", required: false }
-            ].map((field, idx) => (
-              <div key={idx} className="relative group">
-                <label className="flex justify-between items-center text-sm font-bold text-slate-700 mb-2">
-                  <span>{field.label}</span>
-                  {field.required ? <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-bold">Required</span> : <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-medium">Optional</span>}
-                </label>
-                <div className="bg-white border border-slate-200 hover:border-slate-300 rounded-xl p-1.5 transition-all shadow-sm">
-                  <input type="file" name="files" required={field.required} className="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-50 file:text-slate-700 hover:file:bg-slate-100 transition-all cursor-pointer" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              
+              {/* Primary Document - Spans both columns */}
+              <div className="col-span-1 md:col-span-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/60 rounded-2xl p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm shadow-blue-900/5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center shrink-0 border border-blue-100">
+                    <FileSignature className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-extrabold text-slate-900 tracking-tight">
+                      {type === 'loan' ? 'Loan Application Form' : 'Account Opening Application'}
+                    </h3>
+                  </div>
+                </div>
+                <div className="w-full md:w-auto">
+                  <input type="file" name="files" className="w-full md:w-64 text-xs text-slate-600 bg-transparent border-0 outline-none file:mr-3 file:py-1.5 file:px-5 file:rounded-full file:border-0 file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:transition-all cursor-pointer file:shadow-md file:shadow-blue-500/30" required />
                 </div>
               </div>
-            ))}
+
+              {/* Secondary Documents Grid */}
+              {[
+                { label: "Trade License", icon: <Building2 className="w-3.5 h-3.5 text-emerald-500" />, required: true },
+                { label: "Emirates ID (Signatory)", icon: <Contact className="w-3.5 h-3.5 text-indigo-500" />, required: true },
+                { label: "Passport", icon: <Plane className="w-3.5 h-3.5 text-sky-500" />, required: true },
+                { label: "Bank Statements", icon: <Landmark className="w-3.5 h-3.5 text-amber-500" />, required: false },
+                { label: "Financials / Salary", icon: <Wallet className="w-3.5 h-3.5 text-rose-500" />, required: false },
+                { label: "Board Resolution", icon: <FileText className="w-3.5 h-3.5 text-slate-500" />, required: false }
+              ].map((field, idx) => (
+                <div key={idx} className="bg-white border border-slate-200 hover:border-blue-200 hover:shadow-md rounded-2xl p-2.5 transition-all flex flex-col justify-between group shadow-sm shadow-slate-200/50">
+                  <div className="flex justify-between items-center mb-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <div className="p-1 bg-slate-50 rounded-lg group-hover:bg-blue-50 transition-colors">
+                        {field.icon}
+                      </div>
+                      <span className="text-[11px] font-bold text-slate-700">{field.label}</span>
+                    </div>
+                    {field.required ? (
+                      <span className="text-[8px] font-extrabold text-blue-600 bg-blue-50 border border-blue-100 px-1 py-0.5 rounded uppercase tracking-wider">Req</span>
+                    ) : (
+                      <span className="text-[8px] font-bold text-slate-400 bg-slate-50 border border-slate-100 px-1 py-0.5 rounded uppercase tracking-wider">Opt</span>
+                    )}
+                  </div>
+                  <input type="file" name="files" required={field.required} className="w-full text-[10px] text-slate-400 bg-transparent border-0 outline-none file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:font-semibold file:bg-slate-50 file:text-slate-600 group-hover:file:bg-blue-50 group-hover:file:text-blue-700 file:transition-colors cursor-pointer" />
+                </div>
+              ))}
+
+            </div>
           </div>
 
-          <div className="p-10 bg-white border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3 text-slate-500 bg-slate-50 px-4 py-2 rounded-lg border border-slate-200 w-full md:w-auto justify-center">
-              <ShieldCheck className="w-5 h-5 text-emerald-500" />
-              <span className="text-sm font-medium">SOC2 Certified Infrastructure</span>
+          {/* Form Footer */}
+          <div className="p-4 bg-white border-t border-slate-100 flex items-center justify-between shrink-0">
+            <div className="hidden md:flex items-center gap-2 text-slate-500 bg-slate-50 px-3 py-1.5 rounded-md border border-slate-200">
+              <ShieldCheck className="w-4 h-4 text-emerald-500" />
+              <span className="text-xs font-medium">SOC2 Certified Infrastructure</span>
             </div>
             
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full md:w-auto relative overflow-hidden group bg-slate-900 text-white font-bold py-4 px-10 rounded-xl shadow-xl shadow-slate-900/20 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center text-lg"
+              className="w-full md:w-auto relative overflow-hidden group bg-slate-900 text-white font-bold py-3 px-8 rounded-lg shadow-lg shadow-slate-900/20 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center text-sm ml-auto"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-400" />
+                  <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-400" />
                   Analyzing via AI...
                 </>
               ) : (
                 <>
-                  <UploadCloud className="w-5 h-5 mr-3 group-hover:-translate-y-1 transition-transform" />
+                  <UploadCloud className="w-4 h-4 mr-2 group-hover:-translate-y-0.5 transition-transform" />
                   Submit for Verification
                 </>
               )}
@@ -157,5 +182,13 @@ export default function ClientApply() {
         </motion.form>
       </div>
     </div>
+  );
+}
+
+export default function ClientApply() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#f8fafc] flex items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-blue-500" /></div>}>
+      <ApplyForm />
+    </Suspense>
   );
 }

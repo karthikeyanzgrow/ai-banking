@@ -3,8 +3,7 @@ import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { motion } from "framer-motion";
-import { Briefcase, ArrowLeft, CheckCircle, XCircle, FileSearch, Loader2, FileCheck, FileX, Info, AlertTriangle, Sparkles } from "lucide-react";
+import { ArrowLeft, CheckCircle, XCircle, Loader2, FileCheck, FileX, AlertTriangle, Sparkles, FileText } from "lucide-react";
 
 export default function ApplicationDetail(props: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(props.params);
@@ -44,137 +43,131 @@ export default function ApplicationDetail(props: { params: Promise<{ id: string 
     router.push('/staff/applications');
   };
 
-  if (loading) return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-12 h-12 animate-spin text-blue-500" /></div>;
-  if (!data || !data.application) return <div className="min-h-screen bg-slate-50 flex items-center justify-center text-red-500 font-bold">Application not found</div>;
+  if (loading) return <div className="h-screen w-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-blue-500" /></div>;
+  if (!data || !data.application) return <div className="h-screen w-screen bg-slate-50 flex items-center justify-center text-red-500 font-bold">Application not found</div>;
 
   const { application, documents } = data;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-20">
+    <div className="h-screen w-screen overflow-hidden flex flex-col bg-slate-100 text-slate-900 p-4 gap-4">
       
-      {/* Header Navbar */}
-      <header className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link href="/staff/applications" className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-200 text-slate-500 hover:text-slate-900">
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div className="w-px h-8 bg-slate-200 hidden md:block"></div>
-            <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">APP-{application.id.toString().padStart(4, '0')}</h1>
-                <span className={`px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-widest border ${application.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-200' : application.status === 'approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-rose-50 text-rose-600 border-rose-200'}`}>
-                  {application.status}
-                </span>
-              </div>
-              <p className="text-sm text-slate-500 font-medium capitalize mt-0.5">{application.type.replace('_', ' ')}</p>
-            </div>
+      {/* Top Header Bar */}
+      <header className="bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-between px-5 py-3 shrink-0">
+        <div className="flex items-center gap-4">
+          <Link href="/staff/applications" className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-200 text-slate-500">
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+          <div className="flex items-center gap-3">
+            <h1 className="text-sm font-extrabold text-slate-900 tracking-tight">APP-{application.id.toString().padStart(4, '0')}</h1>
+            <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest border ${application.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-200' : application.status === 'approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-rose-50 text-rose-600 border-rose-200'}`}>
+              {application.status}
+            </span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2 bg-slate-100 px-2 py-0.5 rounded">
+              {application.type.replace('_', ' ')}
+            </span>
           </div>
-          
-          {application.status === 'pending' && (
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={() => handleReview('reject')}
-                disabled={actionLoading}
-                className="bg-white hover:bg-rose-50 text-rose-600 font-bold py-2.5 px-6 rounded-xl border border-rose-200 hover:border-rose-300 shadow-sm transition-all disabled:opacity-50 flex items-center"
-              >
-                <XCircle className="w-4 h-4 mr-2" /> Decline
-              </button>
-              <button 
-                onClick={() => handleReview('approve')}
-                disabled={actionLoading}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md shadow-emerald-500/20 transition-all disabled:opacity-50 flex items-center"
-              >
-                <CheckCircle className="w-4 h-4 mr-2" /> Approve
-              </button>
-            </div>
-          )}
         </div>
+        
+        {application.status === 'pending' && (
+          <div className="flex items-center gap-2">
+            <button onClick={() => handleReview('reject')} disabled={actionLoading} className="bg-white hover:bg-rose-50 text-rose-600 font-bold py-1.5 px-4 rounded-lg border border-rose-200 hover:border-rose-300 shadow-sm transition-all disabled:opacity-50 flex items-center text-xs">
+              <XCircle className="w-3.5 h-3.5 mr-1.5" /> Decline
+            </button>
+            <button onClick={() => handleReview('approve')} disabled={actionLoading} className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-4 rounded-lg shadow-sm transition-all disabled:opacity-50 flex items-center text-xs border border-emerald-700">
+              <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Approve
+            </button>
+          </div>
+        )}
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-10">
-        
-        {/* AI Intelligence Panel */}
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-3xl border border-indigo-100 p-8 md:p-12 mb-12 relative overflow-hidden shadow-sm"
-        >
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 opacity-5 pointer-events-none text-indigo-900">
-            <FileSearch className="w-96 h-96" />
-          </div>
-          <div className="relative z-10 max-w-4xl">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-indigo-100 rounded-xl border border-indigo-200">
-                <Sparkles className="w-6 h-6 text-indigo-600" />
-              </div>
-              <h2 className="text-xl font-extrabold text-indigo-900 uppercase tracking-widest">AI Intelligence Brief</h2>
-            </div>
-            
-            <p className="text-2xl md:text-3xl text-slate-800 font-medium leading-snug mb-8">
-              "{application.ai_summary}"
-            </p>
-            
-            <div className="inline-flex items-center bg-white px-5 py-3 rounded-2xl border border-indigo-100 shadow-sm">
-              <span className="text-slate-500 font-bold mr-3 uppercase text-xs tracking-wider">System Recommendation</span>
-              <span className={`flex items-center gap-2 font-extrabold uppercase tracking-widest text-sm ${application.ai_recommendation === 'approve' ? 'text-emerald-600' : application.ai_recommendation === 'reject' ? 'text-rose-600' : 'text-amber-600'}`}>
-                {application.ai_recommendation === 'approve' && <CheckCircle className="w-5 h-5" />}
-                {application.ai_recommendation === 'review' && <AlertTriangle className="w-5 h-5" />}
-                {application.ai_recommendation === 'reject' && <XCircle className="w-5 h-5" />}
-                {application.ai_recommendation}
-              </span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Documents Grid */}
-        <div className="mb-8 flex items-center justify-between">
-          <h3 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            Verified Artifacts
-          </h3>
-          <span className="text-slate-500 text-sm font-bold bg-slate-200/50 px-3 py-1 rounded-full">{documents.length} files processed</span>
+      {/* Summary Banner */}
+      <div className="bg-white rounded-xl border border-slate-200 p-4 shrink-0 flex gap-6 items-center shadow-sm">
+        <div className="flex-grow">
+          <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Summary</h2>
+          <p className="text-xs font-medium text-slate-700 leading-relaxed" title={application.ai_summary}>
+            {application.ai_summary}
+          </p>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {documents.map((doc: any, idx: number) => (
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 * idx }}
-              key={doc.id} 
-              className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col hover:shadow-lg hover:border-blue-200 transition-all group"
-            >
-              <div className="flex items-start justify-between mb-5">
-                <div className={`p-3 rounded-2xl border ${doc.is_valid ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-rose-50 border-rose-100 text-rose-600'}`}>
-                  {doc.is_valid ? <FileCheck className="w-7 h-7" /> : <FileX className="w-7 h-7" />}
-                </div>
-                <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border ${doc.is_valid ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'}`}>
-                  {doc.is_valid ? 'Verified' : 'Flagged'}
-                </span>
-              </div>
-              
-              <h4 className="font-bold text-slate-900 text-lg mb-1 truncate" title={doc.filename}>{doc.filename}</h4>
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-5 bg-slate-50 self-start px-2 py-1 rounded">{doc.document_type.replace('_', ' ')}</p>
-              
-              <div className="mt-auto flex flex-col gap-3">
-                {doc.validation_notes && (
-                  <div className="text-sm text-rose-700 bg-rose-50 p-4 rounded-xl border border-rose-100 leading-relaxed font-medium">
-                    <strong className="block text-rose-500 mb-1 font-black text-xs uppercase tracking-widest">AI Note</strong>
-                    {doc.validation_notes}
-                  </div>
-                )}
-                
-                {doc.extracted_data && doc.extracted_data !== "{}" && (
-                  <div className="text-xs bg-slate-50 p-4 rounded-xl font-mono text-slate-600 border border-slate-200 overflow-hidden shadow-inner">
-                    {doc.extracted_data}
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          ))}
+        <div className="shrink-0 text-right bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
+          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Recommendation</p>
+          <div className={`flex items-center justify-end gap-1.5 font-black uppercase tracking-widest text-xs ${application.ai_recommendation === 'approve' ? 'text-emerald-600' : application.ai_recommendation === 'reject' ? 'text-rose-600' : 'text-amber-600'}`}>
+            {application.ai_recommendation === 'approve' && <CheckCircle className="w-4 h-4" />}
+            {application.ai_recommendation === 'review' && <AlertTriangle className="w-4 h-4" />}
+            {application.ai_recommendation === 'reject' && <XCircle className="w-4 h-4" />}
+            {application.ai_recommendation}
+          </div>
         </div>
+      </div>
 
-      </main>
+      {/* Spreadsheet Table */}
+      <div className="flex-grow bg-white border border-slate-200 rounded-xl flex flex-col overflow-hidden shadow-sm">
+        
+        <div className="flex-grow overflow-auto">
+          <table className="w-full text-left border-collapse">
+            <thead className="bg-slate-50/50 sticky top-0 z-10 border-b border-slate-200">
+              <tr>
+                <th className="px-5 py-3.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider w-12 text-center">Status</th>
+                <th className="px-5 py-3.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider w-56">Artifact Name</th>
+                <th className="px-5 py-3.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider w-40">Type</th>
+                <th className="px-5 py-3.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider min-w-[250px]">Notes</th>
+                <th className="px-5 py-3.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider min-w-[300px]">Extracted Payload</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {documents.map((doc: any) => (
+                <tr key={doc.id}>
+                  <td className="px-5 py-3 align-middle text-center">
+                    <div className="flex justify-center">
+                      {doc.is_valid ? <FileCheck className="w-4 h-4 text-slate-300" /> : <AlertTriangle className="w-4 h-4 text-amber-500" />}
+                    </div>
+                  </td>
+                  <td className="px-5 py-3 align-middle">
+                    <div className="font-medium text-slate-900 text-xs truncate max-w-[200px]" title={doc.filename}>
+                      {doc.filename}
+                    </div>
+                  </td>
+                  <td className="px-5 py-3 align-middle">
+                    <span className="inline-flex items-center px-2 py-1 rounded bg-slate-100 text-[9px] font-semibold text-slate-500 uppercase tracking-widest border border-slate-200/60">
+                      {doc.document_type.replace('_', ' ')}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3 align-middle">
+                    {doc.validation_notes ? (
+                      <div className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed max-w-sm" title={doc.validation_notes}>
+                        {doc.validation_notes}
+                      </div>
+                    ) : (
+                      <span className="text-slate-300 text-[11px] font-medium">-</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-3 align-middle">
+                    {doc.extracted_data && doc.extracted_data !== "{}" ? (
+                      <div className="font-sans text-[10px] line-clamp-2 leading-relaxed max-w-lg flex flex-wrap gap-x-3 gap-y-1">
+                        {(() => {
+                          try {
+                            const data = JSON.parse(doc.extracted_data);
+                            return Object.entries(data).map(([key, value]) => (
+                              <div key={key} className="inline-block">
+                                <span className="font-bold text-slate-700 capitalize">{key.replace(/_/g, ' ')}:</span>{' '}
+                                <span className="text-slate-500 font-medium">{String(value)}</span>
+                              </div>
+                            ));
+                          } catch (e) {
+                            return <span className="text-slate-500 break-all">{doc.extracted_data}</span>;
+                          }
+                        })()}
+                      </div>
+                    ) : (
+                      <span className="text-slate-300 text-[11px] font-medium">-</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   );
 }

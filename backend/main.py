@@ -56,7 +56,7 @@ def review_application(app_id: int, req: ReviewRequest, db: Session = Depends(ge
     db.commit()
     return {"message": f"Application {req.action}d"}
 
-from fastapi import File, UploadFile
+from fastapi import File, UploadFile, Form
 import shutil
 import os
 from ai_service import analyze_documents
@@ -65,7 +65,11 @@ import json
 os.makedirs("uploads", exist_ok=True)
 
 @app.post("/api/applications/upload")
-async def upload_documents(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
+async def upload_documents(
+    files: list[UploadFile] = File(...),
+    application_type: str = Form("account_onboarding"),
+    db: Session = Depends(get_db)
+):
     file_paths = []
     
     # 1. Save uploaded files to disk
@@ -90,7 +94,7 @@ async def upload_documents(files: list[UploadFile] = File(...), db: Session = De
     new_app = models.Application(
         user_id=dummy_user.id,
         status="pending",
-        type="account_onboarding",
+        type=application_type,
         ai_summary=ai_result.get("summary", "No summary provided by AI."),
         ai_recommendation=ai_result.get("recommendation", "review")
     )

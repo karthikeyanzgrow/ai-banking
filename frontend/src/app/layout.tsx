@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${montserrat.variable} font-sans antialiased bg-gray-50 text-slate-800`}>
+      <body className={`${montserrat.className} antialiased bg-gray-50 text-slate-800`}>
         {children}
         <Toaster position="top-right" />
       </body>
