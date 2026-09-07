@@ -27,6 +27,11 @@ class ReviewRequest(BaseModel):
 def read_root():
     return {"message": "Welcome to the AI Banking API"}
 
+@app.get("/health")
+@app.get("/api/health")
+def health_check():
+    return {"status": "healthy", "service": "Z-Grow AI Banking API"}
+
 @app.get("/api/applications")
 def get_applications(db: Session = Depends(get_db)):
     apps = db.query(models.Application).order_by(models.Application.created_at.desc()).all()
