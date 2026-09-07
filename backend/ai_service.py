@@ -89,3 +89,44 @@ def simulate_ai_response(file_paths: list[str], error: str = None) -> dict:
         "recommendation": "review",
         "documents": docs
     }
+
+def upload_kb_document(file_path: str) -> dict:
+    if API_KEY == "dummy_key":
+        return {"gemini_file_uri": "dummy_uri", "gemini_file_name": "dummy_name"}
+    try:
+        client = genai.Client(api_key=API_KEY) 
+        print(f"Uploading KB doc {file_path} to Gemini...")
+        uploaded_file = client.files.upload(file=file_path)
+        return {"gemini_file_uri": uploaded_file.uri, "gemini_file_name": uploaded_file.name}
+    except Exception as e:
+        print(f"Gemini API Error in KB Upload: {e}")
+        return None
+
+def chat_with_kb(message: str, file_uris: list[str]) -> str:
+    if API_KEY == "dummy_key":
+        return "This is a simulated response because the API key is invalid. You asked: " + message
+    try:
+        client = genai.Client(api_key=API_KEY) 
+        uploaded_files = []
+        for uri in file_uris:
+            uploaded_files.append(types.Part.from_uri(file_uri=uri, mime_type="application/pdf"))
+        
+        prompt = (
+            "You are Z-Grow AI, an intelligent internal assistant for banking staff.\n"
+            "You have been provided with internal standard operating procedure (SOP) manuals and guidelines.\n"
+            "Answer the staff member's question based strictly on these documents.\n"
+            "Formatting guidelines:\n"
+            "- Organize your answer clearly with short paragraphs, bold headers, and clean bullet points (* item).\n"
+            "- Put every citation in parentheses specifying document name, page, and section, e.g. (Document Name, Page X, Section Y).\n"
+            "- If the answer is not in the documents, state that clearly based on the provided manuals.\n\n"
+            f"Staff Question: {message}\n"
+        )
+        
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=uploaded_files + [prompt]
+        )
+        return response.text
+    except Exception as e:
+        print(f"Gemini API Error in KB Chat: {e}")
+        return f"Error analyzing documents: {e}"

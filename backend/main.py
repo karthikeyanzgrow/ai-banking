@@ -116,3 +116,42 @@ async def upload_documents(
     
     return {"message": "Application submitted successfully", "application_id": new_app.id}
 
+
+from ai_service import upload_kb_document, chat_with_kb
+class ChatRequest(BaseModel):
+    message: str
+
+@app.post("/api/kb/upload")
+async def upload_kb_doc(uploaded_file: UploadFile = File(...), db: Session = Depends(get_db)):
+    file_path = f"uploads/{uploaded_file.filename}"
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(uploaded_file.file, buffer)
+    
+    result = upload_kb_document(file_path)
+    if not result:
+        raise HTTPException(status_code=500, detail="Failed to upload KB document to AI")
+    
+    new_doc = models.KnowledgeDocument(
+        filename=uploaded_file.filename,
+        gemini_file_uri=result["gemini_file_uri"],
+        gemini_file_name=result["gemini_file_name"]
+    )
+    db.add(new_doc)
+    db.commit()
+    db.refresh(new_doc)
+    return {"message": "Document uploaded and indexed", "document": new_doc}
+
+@app.get("/api/kb/documents")
+def get_kb_documents(db: Session = Depends(get_db)):
+    docs = db.query(models.KnowledgeDocument).order_by(models.KnowledgeDocument.uploaded_at.desc()).all()
+    return docs
+
+@app.post("/api/kb/chat")
+def chat_kb(req: ChatRequest, db: Session = Depends(get_db)):
+    docs = db.query(models.KnowledgeDocument).all()
+    if not docs:
+        return {"answer": "No knowledge base documents uploaded. Please upload manuals first."}
+    
+    uris = [d.gemini_file_uri for d in docs if d.gemini_file_uri != "dummy_uri"]
+    answer = chat_with_kb(req.message, uris)
+    return {"answer": answer}

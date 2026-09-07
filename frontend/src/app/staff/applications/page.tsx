@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, FileText, ChevronRight, CheckCircle, Clock, XCircle, RefreshCw, Search, Sparkles, Menu, X, Filter, Home, Landmark, Building2 } from "lucide-react";
+import { Briefcase, FileText, ChevronRight, CheckCircle, Clock, XCircle, RefreshCw, Search, Menu, X, Filter, Home, Landmark, Building2, BookOpen } from "lucide-react";
 
 export default function ApplicationsQueue() {
   const [apps, setApps] = useState([]);
@@ -93,6 +93,13 @@ export default function ApplicationsQueue() {
                 >
                   <Building2 className="w-4 h-4" /> Business Loan Applications
                 </button>
+                <div className="my-2 border-t border-slate-100" />
+                <Link 
+                  href="/staff/knowledge"
+                  className="flex items-center gap-3 w-full text-left p-4 rounded-xl font-bold text-sm transition-colors text-blue-600 hover:bg-blue-50 border border-transparent"
+                >
+                  <BookOpen className="w-4 h-4 text-blue-600" /> Knowledge Base & Ask AI
+                </Link>
               </div>
             </motion.div>
           </>
@@ -103,29 +110,39 @@ export default function ApplicationsQueue() {
       <main className="max-w-7xl mx-auto px-6 py-12">
         {activeView === 'home' ? (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center justify-center pt-12">
-            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight text-center mb-4">Select Application Queue</h1>
-            <p className="text-slate-500 text-center mb-16 max-w-xl">Choose a queue below to review applications that have been automatically analyzed and pre-scored by Z-Grow AI.</p>
+            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight text-center mb-4">Select Staff Workspace</h1>
+            <p className="text-slate-500 text-center mb-14 max-w-xl">Choose an application review queue or access the internal knowledge base for AI compliance search.</p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
-              <button onClick={() => setActiveView('account')} className="bg-white border border-slate-200 hover:border-blue-500 hover:shadow-xl hover:shadow-blue-500/10 p-10 rounded-3xl text-left transition-all group flex flex-col gap-4">
-                <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                  <Landmark className="w-7 h-7" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
+              <button onClick={() => setActiveView('account')} className="bg-white border border-slate-200 hover:border-blue-500 hover:shadow-xl hover:shadow-blue-500/10 p-8 rounded-3xl text-left transition-all group flex flex-col gap-4">
+                <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                  <Landmark className="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-extrabold text-slate-900 mb-2">Business Account Opening</h2>
-                  <p className="text-slate-500 font-medium leading-relaxed">Review KYC profiles, trade licenses, and identity documents for new corporate entities.</p>
+                  <h2 className="text-xl font-extrabold text-slate-900 mb-2">Business Account Opening</h2>
+                  <p className="text-slate-500 text-xs font-medium leading-relaxed">Review KYC profiles, trade licenses, and identity documents for new corporate entities.</p>
                 </div>
               </button>
 
-              <button onClick={() => setActiveView('loan')} className="bg-white border border-slate-200 hover:border-blue-500 hover:shadow-xl hover:shadow-blue-500/10 p-10 rounded-3xl text-left transition-all group flex flex-col gap-4">
-                <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                  <Building2 className="w-7 h-7" />
+              <button onClick={() => setActiveView('loan')} className="bg-white border border-slate-200 hover:border-blue-500 hover:shadow-xl hover:shadow-blue-500/10 p-8 rounded-3xl text-left transition-all group flex flex-col gap-4">
+                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                  <Building2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-extrabold text-slate-900 mb-2">Business Loan Applications</h2>
-                  <p className="text-slate-500 font-medium leading-relaxed">Analyze financial statements, board resolutions, and AI risk assessments for corporate credit.</p>
+                  <h2 className="text-xl font-extrabold text-slate-900 mb-2">Business Loan Applications</h2>
+                  <p className="text-slate-500 text-xs font-medium leading-relaxed">Analyze financial statements, board resolutions, and AI risk assessments for corporate credit.</p>
                 </div>
               </button>
+
+              <Link href="/staff/knowledge" className="bg-white border border-slate-200 hover:border-blue-500 hover:shadow-xl hover:shadow-blue-500/10 p-8 rounded-3xl text-left transition-all group flex flex-col gap-4">
+                <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                  <BookOpen className="w-6 h-6" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-extrabold text-slate-900 mb-2">Knowledge Base & Ask AI</h2>
+                  <p className="text-slate-500 text-xs font-medium leading-relaxed">Upload internal SOPs & regulatory manuals to ask policy questions with instant citations.</p>
+                </div>
+              </Link>
             </div>
           </motion.div>
         ) : (

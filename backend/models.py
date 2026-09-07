@@ -44,3 +44,13 @@ class Document(Base):
     application = relationship("Application", back_populates="documents")
 
 
+
+
+class KnowledgeDocument(Base):
+    __tablename__ = 'knowledge_documents'
+
+    id = Column(Integer, primary_key=True, index=True)
+    filename = Column(String)
+    gemini_file_uri = Column(String)
+    gemini_file_name = Column(String)
+    uploaded_at = Column(DateTime, default=datetime.utcnow)
