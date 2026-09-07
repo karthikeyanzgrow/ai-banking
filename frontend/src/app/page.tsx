@@ -6,16 +6,11 @@ import { Users, ShieldCheck, ArrowRight } from "lucide-react";
 export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center font-sans p-6">
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-12"
-      >
-        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+      <div className="text-center mb-12">
+        <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
           Zgrow AI Banking Solutions
         </h1>
-      </motion.div>
+      </div>
 
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
         
