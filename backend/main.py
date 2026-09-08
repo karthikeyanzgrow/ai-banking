@@ -10,11 +10,11 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="AI Banking API")
 
-# Configure CORS for Next.js frontend
+# Configure CORS for Next.js frontend (allow Vercel and local development)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
