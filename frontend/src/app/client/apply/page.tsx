@@ -27,10 +27,13 @@ function ApplyForm() {
       });
       if (res.ok) {
         setSuccess(true);
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        alert(errData.detail || `Server returned error (${res.status}). If uploading large PDFs, check Nginx client_max_body_size.`);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert("Failed to upload. Make sure backend is running.");
+      alert(`Connection failed: ${e.message || "Failed to reach backend"}. Please check Mixed Content (HTTPS vs HTTP) or CORS in browser console.`);
     } finally {
       setIsSubmitting(false);
     }
